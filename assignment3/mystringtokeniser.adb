@@ -50,12 +50,8 @@ package body MyStringTokeniser with SPARK_Mode is
                OutIndex := OutIndex + 1;
             end if;
 
-            -- check for end of string, avoids overflow when incrementing Index
-            if S'Last - Extent.Length < Index then
-               return;
-            else
-               Index := Index + Extent.Length;
-            end if;
+            -- advance to first character after the token
+            Index := Index + Extent.Length;
          end if;
       end loop;
       Count := Processed;
