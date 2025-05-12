@@ -10,6 +10,8 @@ with MyStringTokeniser;
 with StringToInteger;
 with PIN;
 with MemoryStore;
+with CalculatorManager;
+use CalculatorManager;
 
 with Ada.Text_IO;use Ada.Text_IO;
 with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
@@ -28,12 +30,12 @@ procedure Main is
    PIN1 : PIN.PIN := PIN.From_String ("1234");
    PIN2 : PIN.PIN := PIN.From_String ("1234");
    
-   -- Calculator State
-   type State_Type is (Locked, Unlocked, Error);
-   State : State_Type := Locked;
+   -- Calculator Manager
+   CM : CalculatorManager.Calculator;
    
    -- A Pin from stdin
    USER_PIN : PIN.PIN;
+   
    -- Commands
    CMD_ADD      : constant Lines.MyString := Lines.From_String("+");
    CMD_SUBTRACT : constant Lines.MyString := Lines.From_String("-");
@@ -62,10 +64,9 @@ begin
                 MyCommandLine.Argument(1)(I) >= '0' and MyCommandLine.Argument(1)(I) <= '9')
          then
             USER_PIN := PIN.From_String (Arg);
-            State := Locked;
+            CalculatorManager.Init(CM, USER_PIN);
          else
             Put_Line("SYSTEM: You must provide a four-digit PIN");
-            State := Error;
             return;
          end if;
       end;
@@ -78,22 +79,26 @@ begin
    --  Main Loop
    ------------------------------------------------------------------
    loop
-      exit when State = Error;
-      
-      if State = Locked then
+      if Get_State(CM) = Locked then
          Put("locked> ");
-      else
+      elsif Get_State(CM) = Unlocked then
          Put("unlocked> ");
       end if;
       
       Lines.Get_Line(S);
       
       declare
-         T : MyStringTokeniser.TokenArray(1 .. 3) := (others => (Start => 1, Length => 0));
+         T : MyStringTokeniser.TokenArray(1 .. 5) := (others => (Start => 1, Length => 0));
          NumTokens : Natural;
          Command : Lines.MyString;
       begin
          MyStringTokeniser.Tokenise(Lines.To_String(S), T, NumTokens);
+         
+         -- Check if token > 3, exit
+         if NumTokens > 3 then
+            Put("ERROR: you input more than 3 tokens");
+            return;
+         end if;
          
          -- first token
          if NumTokens >= 1 then
@@ -101,8 +106,6 @@ begin
 
             if Lines.Equal(Command, CMD_LOCK) then
                Put_Line("you typed: " & Lines.To_String(CMD_LOCK));
-                  
-               
             elsif Lines.Equal(Command, CMD_ADD) then
                Put_Line("you typed: " & Lines.To_String(CMD_ADD));
             elsif Lines.Equal(Command, CMD_SUBTRACT) then
@@ -125,24 +128,21 @@ begin
                Put_Line("you typed: " & Lines.To_String(CMD_REMOVE));
             elsif Lines.Equal(Command, CMD_LIST) then
                Put_Line("you typed: " & Lines.To_String(CMD_LIST));
-            elsif Lines.Equal(Command, CMD_UNLOCK) and State = Locked then
-               Put_Line("you typed: " & Lines.To_String(CMD_UNLOCK));
-               
+            elsif Lines.Equal(Command, CMD_UNLOCK) and Get_State(CM) = Locked then
                declare
                   Token2     : String := Lines.To_String(Lines.Substring(S, T(2).Start, T(2).Start + T(2).Length - 1));
-                  temp_pin : PIN.PIN := PIN.From_String(Token2);
+                  temp_pin   : PIN.PIN := PIN.From_String(Token2);
                begin
                   if PIN."="(temp_pin, USER_PIN) then
                      Put_Line("PIN matches. Calculator unlocked.");
-                     State := Unlocked;
+                     CM.Current_State := Unlocked;
                   else
-                     Put_Line("Wrong PIN. State set to error.");
-                     State := Error;
+                     Put_Line("Wrong PIN. Try Again.");
                   end if;
                end;
             else
                Put_Line("ERROR INPUT: " & Lines.To_String(Command));
-               State := Error;
+               return;
             end if;
          end if;
 
@@ -288,6 +288,5 @@ begin
    Put_Line("2 ** 32 is too big to fit into an Integer...");
    Put_Line("Hence when trying to parse it from a string, it is treated as 0:");
    Put(StringToInteger.From_String("2147483648")); New_Line;
-   
-      
+    
 end Main;
