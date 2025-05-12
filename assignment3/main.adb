@@ -24,6 +24,10 @@ procedure Main is
    PIN1 : PIN.PIN := PIN.From_String ("1234");
    PIN2 : PIN.PIN := PIN.From_String ("1234");
    
+   -- Calculator
+   type State_Type is (Locked, Unlocked, Error);
+   State : State_Type := Locked;
+   
    -- Commands
    CMD_ADD      : constant Lines.MyString := Lines.From_String("+");
    CMD_SUBTRACT : constant Lines.MyString := Lines.From_String("-");
@@ -40,51 +44,134 @@ procedure Main is
    CMD_LOCK     : constant Lines.MyString := Lines.From_String("lock");
 begin
    ------------------------------------------------------------------
+   --  Programming Begin, must contain password
+   ------------------------------------------------------------------
+   if MyCommandLine.Argument_Count = 1 then
+      declare
+         Arg : constant String := MyCommandLine.Argument(1);
+      begin
+         if Arg'Length = 4 then
+            State := Locked;
+         else
+            Put_Line("SYSTEM: You must provide a four-digit PIN");
+            State := Error;
+            return;
+         end if;
+      end;
+   else
+      Put_Line("SYSTEM: You must provide a four-digit PIN");
+      return;
+   end if;
+   
+   ------------------------------------------------------------------
+   --  Main Loop
+   ------------------------------------------------------------------
+   loop
+      exit when State = Error;
+      
+      if State = Locked then
+         Put("locked> ");
+      else
+         Put("unlocked> ");
+      end if;
+      
+      Lines.Get_Line(S);
+      
+      declare
+         T : MyStringTokeniser.TokenArray(1 .. 3) := (others => (Start => 1, Length => 0));
+         NumTokens : Natural;
+         Command : Lines.MyString;
+      begin
+         MyStringTokeniser.Tokenise(Lines.To_String(S), T, NumTokens);
+         
+         -- first token
+         if NumTokens >= 1 then
+            Command := Lines.Substring(S, T(1).Start, T(1).Start + T(1).Length - 1);
+
+            if Lines.Equal(Command, CMD_LOCK) then
+               Put_Line("you typed: " & Lines.To_String(CMD_LOCK));
+            elsif Lines.Equal(Command, CMD_ADD) then
+               Put_Line("you typed: " & Lines.To_String(CMD_ADD));
+            elsif Lines.Equal(Command, CMD_SUBTRACT) then
+               Put_Line("you typed: " & Lines.To_String(CMD_SUBTRACT));
+            elsif Lines.Equal(Command, CMD_MULTIPLY) then
+               Put_Line("you typed: " & Lines.To_String(CMD_MULTIPLY));
+            elsif Lines.Equal(Command, CMD_DIVIDE) then
+               Put_Line("you typed: " & Lines.To_String(CMD_DIVIDE));
+            elsif Lines.Equal(Command, CMD_PUSH1) then
+               Put_Line("you typed: " & Lines.To_String(CMD_PUSH1));
+            elsif Lines.Equal(Command, CMD_PUSH2) then
+               Put_Line("you typed: " & Lines.To_String(CMD_PUSH2));
+            elsif Lines.Equal(Command, CMD_POP) then
+               Put_Line("you typed: " & Lines.To_String(CMD_POP));
+            elsif Lines.Equal(Command, CMD_LOADFROM) then
+               Put_Line("you typed: " & Lines.To_String(CMD_LOADFROM));
+            elsif Lines.Equal(Command, CMD_STORETO) then
+               Put_Line("you typed: " & Lines.To_String(CMD_STORETO));
+            elsif Lines.Equal(Command, CMD_REMOVE) then
+               Put_Line("you typed: " & Lines.To_String(CMD_REMOVE));
+            elsif Lines.Equal(Command, CMD_LIST) then
+               Put_Line("you typed: " & Lines.To_String(CMD_LIST));
+            elsif Lines.Equal(Command, CMD_UNLOCK) then
+               Put_Line("you typed: " & Lines.To_String(CMD_UNLOCK));
+            else
+               Put_Line("ERROR INPUT: " & Lines.To_String(Command));
+               State := Error;
+            end if;
+         end if;
+
+      end;
+      
+   end loop;
+   
+   
+   ------------------------------------------------------------------
    --  My TESTING
    ------------------------------------------------------------------
-   Put("locked> ");Lines.Get_Line(S);
+   
+      Lines.Get_Line(S);
 
-   declare
-      T : MyStringTokeniser.TokenArray(1 .. 5) := (others => (Start => 1, Length => 0));
-      NumTokens : Natural;
-      Command : Lines.MyString;
-   begin
-      MyStringTokeniser.Tokenise(Lines.To_String(S), T, NumTokens);
+      declare
+         T : MyStringTokeniser.TokenArray(1 .. 5) := (others => (Start => 1, Length => 0));
+         NumTokens : Natural;
+         Command : Lines.MyString;
+      begin
+         MyStringTokeniser.Tokenise(Lines.To_String(S), T, NumTokens);
 
-      if NumTokens >= 1 then
-         Command := Lines.Substring(S, T(1).Start, T(1).Start + T(1).Length - 1);
+         if NumTokens >= 1 then
+            Command := Lines.Substring(S, T(1).Start, T(1).Start + T(1).Length - 1);
 
-         if Lines.Equal(Command, CMD_LOCK) then
-            Put_Line("you typed: " & Lines.To_String(CMD_LOCK));
-         elsif Lines.Equal(Command, CMD_ADD) then
-            Put_Line("you typed: " & Lines.To_String(CMD_ADD));
-         elsif Lines.Equal(Command, CMD_SUBTRACT) then
-            Put_Line("you typed: " & Lines.To_String(CMD_SUBTRACT));
-         elsif Lines.Equal(Command, CMD_MULTIPLY) then
-            Put_Line("you typed: " & Lines.To_String(CMD_MULTIPLY));
-         elsif Lines.Equal(Command, CMD_DIVIDE) then
-            Put_Line("you typed: " & Lines.To_String(CMD_DIVIDE));
-         elsif Lines.Equal(Command, CMD_PUSH1) then
-            Put_Line("you typed: " & Lines.To_String(CMD_PUSH1));
-         elsif Lines.Equal(Command, CMD_PUSH2) then
-            Put_Line("you typed: " & Lines.To_String(CMD_PUSH2));
-         elsif Lines.Equal(Command, CMD_POP) then
-            Put_Line("you typed: " & Lines.To_String(CMD_POP));
-         elsif Lines.Equal(Command, CMD_LOADFROM) then
-            Put_Line("you typed: " & Lines.To_String(CMD_LOADFROM));
-         elsif Lines.Equal(Command, CMD_STORETO) then
-            Put_Line("you typed: " & Lines.To_String(CMD_STORETO));
-         elsif Lines.Equal(Command, CMD_REMOVE) then
-            Put_Line("you typed: " & Lines.To_String(CMD_REMOVE));
-         elsif Lines.Equal(Command, CMD_LIST) then
-            Put_Line("you typed: " & Lines.To_String(CMD_LIST));
-         elsif Lines.Equal(Command, CMD_UNLOCK) then
-            Put_Line("you typed: " & Lines.To_String(CMD_UNLOCK));
-         else
-            Put_Line("ERROR INPUT: " & Lines.To_String(Command));
+            if Lines.Equal(Command, CMD_LOCK) then
+               Put_Line("you typed: " & Lines.To_String(CMD_LOCK));
+            elsif Lines.Equal(Command, CMD_ADD) then
+               Put_Line("you typed: " & Lines.To_String(CMD_ADD));
+            elsif Lines.Equal(Command, CMD_SUBTRACT) then
+               Put_Line("you typed: " & Lines.To_String(CMD_SUBTRACT));
+            elsif Lines.Equal(Command, CMD_MULTIPLY) then
+               Put_Line("you typed: " & Lines.To_String(CMD_MULTIPLY));
+            elsif Lines.Equal(Command, CMD_DIVIDE) then
+               Put_Line("you typed: " & Lines.To_String(CMD_DIVIDE));
+            elsif Lines.Equal(Command, CMD_PUSH1) then
+               Put_Line("you typed: " & Lines.To_String(CMD_PUSH1));
+            elsif Lines.Equal(Command, CMD_PUSH2) then
+               Put_Line("you typed: " & Lines.To_String(CMD_PUSH2));
+            elsif Lines.Equal(Command, CMD_POP) then
+               Put_Line("you typed: " & Lines.To_String(CMD_POP));
+            elsif Lines.Equal(Command, CMD_LOADFROM) then
+               Put_Line("you typed: " & Lines.To_String(CMD_LOADFROM));
+            elsif Lines.Equal(Command, CMD_STORETO) then
+               Put_Line("you typed: " & Lines.To_String(CMD_STORETO));
+            elsif Lines.Equal(Command, CMD_REMOVE) then
+               Put_Line("you typed: " & Lines.To_String(CMD_REMOVE));
+            elsif Lines.Equal(Command, CMD_LIST) then
+               Put_Line("you typed: " & Lines.To_String(CMD_LIST));
+            elsif Lines.Equal(Command, CMD_UNLOCK) then
+               Put_Line("you typed: " & Lines.To_String(CMD_UNLOCK));
+            else
+               Put_Line("ERROR INPUT: " & Lines.To_String(Command));
+            end if;
          end if;
-      end if;
-   end;
+      end;
    
    ------------------------------------------------------------------
    --  Command-line echo
