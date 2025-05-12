@@ -23,7 +23,30 @@ procedure Main is
    --  PIN demo
    PIN1 : PIN.PIN := PIN.From_String ("1234");
    PIN2 : PIN.PIN := PIN.From_String ("1234");
+   
+   Lock_Command : constant Lines.MyString := Lines.From_String("lock");
 begin
+   ------------------------------------------------------------------
+   --  My TESTING
+   ------------------------------------------------------------------
+   Put("locked> ");Lines.Get_Line(S);
+
+   declare
+      T : MyStringTokeniser.TokenArray(1 .. 5) := (others => (Start => 1, Length => 0));
+      NumTokens : Natural;
+      Command : Lines.MyString;
+   begin
+      MyStringTokeniser.Tokenise(Lines.To_String(S), T, NumTokens);
+
+      if NumTokens >= 1 then
+         Command := Lines.Substring(S, T(1).Start, T(1).Start + T(1).Length - 1);
+
+         if Lines.Equal(Command, Lock_Command) then
+            Put_Line("putted lock");
+         end if;
+      end if;
+   end;
+   
    ------------------------------------------------------------------
    --  Command-line echo
    ------------------------------------------------------------------
@@ -69,6 +92,7 @@ begin
    declare
       T : MyStringTokeniser.TokenArray(1..5) := (others => (Start => 1, Length => 0));
       NumTokens : Natural;
+      
    begin
       MyStringTokeniser.Tokenise(Lines.To_String(S),T,NumTokens);
       Put("You entered "); Put(NumTokens); Put_Line(" tokens.");
