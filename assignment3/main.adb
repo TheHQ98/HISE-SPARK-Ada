@@ -24,10 +24,11 @@ procedure Main is
    PIN1 : PIN.PIN := PIN.From_String ("1234");
    PIN2 : PIN.PIN := PIN.From_String ("1234");
    
-   -- Calculator
+   -- Calculator State
    type State_Type is (Locked, Unlocked, Error);
    State : State_Type := Locked;
    
+   USER_PIN : PIN.PIN;
    -- Commands
    CMD_ADD      : constant Lines.MyString := Lines.From_String("+");
    CMD_SUBTRACT : constant Lines.MyString := Lines.From_String("-");
@@ -42,15 +43,20 @@ procedure Main is
    CMD_LIST     : constant Lines.MyString := Lines.From_String("list");
    CMD_UNLOCK   : constant Lines.MyString := Lines.From_String("unlock");
    CMD_LOCK     : constant Lines.MyString := Lines.From_String("lock");
+
 begin
    ------------------------------------------------------------------
-   --  Programming Begin, must contain password
+   --  Programming Begin, must contain PIN
    ------------------------------------------------------------------
    if MyCommandLine.Argument_Count = 1 then
       declare
          Arg : constant String := MyCommandLine.Argument(1);
       begin
-         if Arg'Length = 4 then
+         if Arg'Length = 4 and
+           (for all I in MyCommandLine.Argument(1)'Range => 
+                MyCommandLine.Argument(1)(I) >= '0' and MyCommandLine.Argument(1)(I) <= '9')
+         then
+            USER_PIN := PIN.From_String (Arg);
             State := Locked;
          else
             Put_Line("SYSTEM: You must provide a four-digit PIN");
@@ -90,6 +96,8 @@ begin
 
             if Lines.Equal(Command, CMD_LOCK) then
                Put_Line("you typed: " & Lines.To_String(CMD_LOCK));
+                  
+               
             elsif Lines.Equal(Command, CMD_ADD) then
                Put_Line("you typed: " & Lines.To_String(CMD_ADD));
             elsif Lines.Equal(Command, CMD_SUBTRACT) then
