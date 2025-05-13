@@ -41,6 +41,11 @@ package CalculatorManager with SPARK_Mode is
 
    procedure List(Calc : Calculator);
    
+   procedure Remove(Calc : out Calculator; Address : MemoryStore.Location_Index);
+
+   procedure Load(Calc : out Calculator; Address : MemoryStore.Location_Index);
+
+
    -- TESTING ONLY
    procedure Print_Stack_Size(Calc : Calculator);
 private

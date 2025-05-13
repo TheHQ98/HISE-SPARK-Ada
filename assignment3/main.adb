@@ -149,8 +149,11 @@ begin
                      Put_Line("Wrong PIN.");
                   end if;
                end;
+            elsif Lines.Equal(Command, CMD_LOCK) then
+               Put_Line("Already locked");
             else
-               Put_Line("Please unlock first.");
+               Put_Line("Unexpect input");
+               return;
             end if;
          -- unlock state
          elsif CalculatorManager."="(CalculatorManager.Get_State(CM), CalculatorManager.Unlocked) then
@@ -275,13 +278,45 @@ begin
                else
                   CalculatorManager.List(CM);
                end if;
+            -- remove
+            elsif Lines.Equal(Command, CMD_REMOVE) then
+               declare
+                     Address : MemoryStore.Location_Index;
+               begin
+                  if NumTokens /= 2 then
+                     Put_Line("SYSTEM: Token number not correct");
+                        return;
+                  elsif Utils.Is_Legal_Number (StringToInteger.From_String(Lines.To_String(Token1))) = False then
+                     Put_Line ("Please type a legal address: 1...256");
+                  else
+                     Address := StringToInteger.From_String(Lines.To_String(Token1));
+                     CalculatorManager.Remove(CM, Address);
+                  end if;
+               end;
+            elsif Lines.Equal(Command, CMD_LOADFROM) then
+               declare
+                     Address : MemoryStore.Location_Index;
+               begin
+                  if NumTokens /= 2 then
+                     Put_Line("SYSTEM: Token number not correct");
+                        return;
+                  elsif Utils.Is_Legal_Number (StringToInteger.From_String(Lines.To_String(Token1))) = False then
+                     Put_Line ("Please type a legal address: 1...256");
+                  else
+                     Address := StringToInteger.From_String(Lines.To_String(Token1));
+                     CalculatorManager.Load(CM, Address);
+                  end if;
+               end;
+            else
+               Put_Line("SYSTEM: uncorrect input");
+               return;
             end if;
          end if;
          
 
          -- ENDING LOOP TESTING
-         CalculatorManager.Print_Stack_Size (CM);
-         New_Line;
+         --  CalculatorManager.Print_Stack_Size (CM);
+         --  New_Line;
       end;
       
    end loop;

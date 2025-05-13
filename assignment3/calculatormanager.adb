@@ -139,6 +139,23 @@ package body CalculatorManager with SPARK_Mode is
       MemoryStore.Print (Calc.DB);
    end List;
 
+   procedure Remove(Calc : out Calculator; Address : MemoryStore.Location_Index) is 
+   begin
+      MemoryStore.Remove (Calc.DB, Address);
+   end Remove;
+
+   procedure Load(Calc : out Calculator; Address : MemoryStore.Location_Index) is
+   I : MemoryStore.Int32;
+   begin
+      if MemoryStore.Has (Calc.DB, Address) = False then
+         Put_Line ("Your input address cannot find any number");
+      else
+         I := MemoryStore.Get (Calc.DB, Address);
+         SS.Push (Calc.Stack, Integer(I));
+         MemoryStore.Remove (Calc.DB, Address);
+      end if;
+   end Load;
+
    -- TESTING ONLY
    procedure Print_Stack_Size(Calc : Calculator) is
    begin
