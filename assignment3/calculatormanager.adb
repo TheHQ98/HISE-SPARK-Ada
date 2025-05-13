@@ -36,7 +36,7 @@ package body CalculatorManager with SPARK_Mode is
    
    function Check_Stack_Size(Calc : Calculator) return Boolean is
    begin
-      if SS.Size(Calc.Stack) > 512 then
+      if SS.Size(Calc.Stack) < 512 then
          return True;
       else
          return False;
@@ -48,8 +48,24 @@ package body CalculatorManager with SPARK_Mode is
       SS.Push(Calc.Stack, I);
    end Push;
 
+   function Check_Stack_Pop(Calc : Calculator) return Boolean is
+   begin
+      if SS.Size(Calc.Stack) > 0 then
+         return True;
+      else
+         return False;
+      end if;
+   end Check_Stack_Pop;
+
+   procedure Pop(Calc : out Calculator) is
+   I : Integer;
+   begin
+      SS.Pop (Calc.Stack, I);
+   end Pop;
+
    -- TESTING ONLY
    procedure Print_Stack_Size(Calc : Calculator) is
+
    begin
       Put("Stack Size:");
       Ada.Integer_Text_IO.Put(SS.Size(Calc.Stack));

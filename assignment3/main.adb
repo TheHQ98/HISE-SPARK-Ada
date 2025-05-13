@@ -123,15 +123,14 @@ begin
             Command := Lines.Substring(S, T(1).Start, T(1).Start + T(1).Length - 1);
             Token1  := Lines.Substring(S, T(2).Start, T(2).Start + T(2).Length - 1);
          end if;
+
+         -- NumTokens = 1
+         if NumTokens = 1 then
+            Command := Lines.Substring(S, T(1).Start, T(1).Start + T(1).Length - 1);
+         end if;
          
          -- lock state
          if CalculatorManager."="(CalculatorManager.Get_State(CM), CalculatorManager.Locked) then
-            -- check token
-            if NumTokens /= 2 then
-               Put_Line ("SYSTEM: Token not provided");
-               return;
-            end if;
-
             -- unlock
             if Lines.Equal(Command, CMD_UNLOCK) then
                declare
@@ -150,6 +149,8 @@ begin
                      Put_Line("Wrong PIN.");
                   end if;
                end;
+            else
+               Put_Line("Please unlock first.");
             end if;
          -- unlock state
          elsif CalculatorManager."="(CalculatorManager.Get_State(CM), CalculatorManager.Unlocked) then
@@ -157,7 +158,7 @@ begin
             if Lines.Equal(Command, CMD_LOCK) then
                -- check token
                if NumTokens /= 2 then
-                  Put_Line ("SYSTEM: Token not provided");
+                  Put_Line ("SYSTEM: Token number not correct");
                   return;
                end if;
 
@@ -172,30 +173,41 @@ begin
                   temp_pin := PIN.From_String(Lines.To_String(Token1));
                   CalculatorManager.Set_Locked(CM, temp_pin);
                end;
+            -- push1
             elsif Lines.Equal(Command, CMD_PUSH1) then
                -- check token
                if NumTokens /= 2 then
-                  Put_Line("SYSTEM: Token not provided");
+                  Put_Line("SYSTEM: Token number not correct");
                   return;
-               elsif CalculatorManager.Check_Stack_Size(CM) = True then
+               elsif CalculatorManager.Check_Stack_Size(CM) = False then
                   Put_Line("Cannot push anymore");
                else
                   CalculatorManager.Push(CM, StringToInteger.From_String(Lines.To_String(Token1)));
                end if;
+            -- push2
             elsif Lines.Equal(Command, CMD_PUSH2) then
                -- check token
                if NumTokens /= 3 then
-                  Put_Line("SYSTEM: Token not provided");
+                  Put_Line("SYSTEM: Token number not correct");
                   return;
-               elsif CalculatorManager.Check_Stack_Size(CM) = True then
+               elsif CalculatorManager.Check_Stack_Size(CM) = False then
                   Put_Line("Cannot push anymore");
                else
                   CalculatorManager.Push(CM, StringToInteger.From_String(Lines.To_String(Token1)));
-                  if CalculatorManager.Check_Stack_Size(CM) = True then
+                  if CalculatorManager.Check_Stack_Size(CM) = False then
                      Put_Line("Cannot push anymore");
                   else
                      CalculatorManager.Push(CM, StringToInteger.From_String(Lines.To_String(Token2)));
                   end if;
+               end if;
+            elsif Lines.Equal(Command, CMD_POP) then
+               if NumTokens /= 1 then
+                  Put_Line("SYSTEM: Token number not correct");
+                  return;
+               elsif CalculatorManager.Check_Stack_Pop (CM) = False then
+                  Put_Line("Cannot pop anymore");
+               else
+                  CalculatorManager.Pop(CM);
                end if;
             end if;
          end if;

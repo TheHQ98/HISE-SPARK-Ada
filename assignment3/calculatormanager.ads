@@ -18,11 +18,16 @@ package CalculatorManager with SPARK_Mode is
    
    procedure Set_Locked(Calc : out Calculator; Master_PIN : PIN.PIN);
 
+   -- Check for can push anymore token into the stack
    function Check_Stack_Size(Calc : Calculator) return Boolean;
    
    procedure Push(Calc : out Calculator; I: Integer);
 
+   -- Check for can pop from the stack
+   function Check_Stack_Pop(Calc : Calculator) return Boolean;
 
+   procedure Pop(Calc : out Calculator);
+   
    -- TESTING ONLY
    procedure Print_Stack_Size(Calc : Calculator);
 private
