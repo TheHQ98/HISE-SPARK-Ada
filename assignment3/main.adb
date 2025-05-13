@@ -11,6 +11,7 @@ with StringToInteger;
 with PIN;
 with MemoryStore;
 with CalculatorManager;
+with Utils;
 
 with Ada.Text_IO;use Ada.Text_IO;
 with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
@@ -120,10 +121,23 @@ begin
          
          -- lock state
          if CalculatorManager."="(CalculatorManager.Get_State(CM), CalculatorManager.Locked) then
+            -- check token
+            if NumTokens /= 2 then
+               Put_Line ("SYSTEM: Token not provided");
+               return;
+            end if;
+
+            -- unlock
             if Lines.Equal(Command, CMD_UNLOCK) then
                declare
-                  temp_pin   : PIN.PIN := PIN.From_String(Lines.To_String(Token1));
+                  temp_pin : PIN.PIN;
                begin
+                  if Utils.Is_Valid_PIN(Lines.To_String(Token1)) = False then
+                     Put_Line ("Wrong Input: " & Lines.To_String(Token1));
+                     return;
+                  end if;
+
+                  temp_pin := PIN.From_String(Lines.To_String(Token1));
                   if PIN."="(temp_pin, CalculatorManager.Get_Master_PIN(CM)) then
                      -- change CM state to unlocked state
                      CalculatorManager.Set_State(CM, CalculatorManager.Unlocked);
@@ -134,11 +148,23 @@ begin
             end if;
          -- unlock state
          elsif CalculatorManager."="(CalculatorManager.Get_State(CM), CalculatorManager.Unlocked) then
-            -- user try to lock
+            -- lock the calculator
             if Lines.Equal(Command, CMD_LOCK) then
+               -- check token
+               if NumTokens /= 2 then
+                  Put_Line ("SYSTEM: Token not provided");
+                  return;
+               end if;
+
                declare
-                  temp_pin   : PIN.PIN := PIN.From_String(Lines.To_String(Token1));
+                  temp_pin : PIN.PIN;
                begin
+                  if Utils.Is_Valid_PIN(Lines.To_String(Token1)) = False then
+                     Put_Line ("Wrong Input: " & Lines.To_String(Token1));
+                     return;
+                  end if;
+
+                  temp_pin := PIN.From_String(Lines.To_String(Token1));
                   CalculatorManager.Set_Locked(CM, temp_pin);
                end;
             end if;
