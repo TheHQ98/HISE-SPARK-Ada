@@ -172,59 +172,38 @@ begin
                   temp_pin := PIN.From_String(Lines.To_String(Token1));
                   CalculatorManager.Set_Locked(CM, temp_pin);
                end;
+            elsif Lines.Equal(Command, CMD_PUSH1) then
+               -- check token
+               if NumTokens /= 2 then
+                  Put_Line("SYSTEM: Token not provided");
+                  return;
+               elsif CalculatorManager.Check_Stack_Size(CM) = True then
+                  Put_Line("Cannot push anymore");
+               else
+                  CalculatorManager.Push(CM, StringToInteger.From_String(Lines.To_String(Token1)));
+               end if;
+            elsif Lines.Equal(Command, CMD_PUSH2) then
+               -- check token
+               if NumTokens /= 3 then
+                  Put_Line("SYSTEM: Token not provided");
+                  return;
+               elsif CalculatorManager.Check_Stack_Size(CM) = True then
+                  Put_Line("Cannot push anymore");
+               else
+                  CalculatorManager.Push(CM, StringToInteger.From_String(Lines.To_String(Token1)));
+                  if CalculatorManager.Check_Stack_Size(CM) = True then
+                     Put_Line("Cannot push anymore");
+                  else
+                     CalculatorManager.Push(CM, StringToInteger.From_String(Lines.To_String(Token2)));
+                  end if;
+               end if;
             end if;
          end if;
          
-         
-         -- unlock state
-         
-         
-         -- first token
---           if NumTokens >= 1 then
---              Command := Lines.Substring(S, T(1).Start, T(1).Start + T(1).Length - 1);
---  
---              if Lines.Equal(Command, CMD_LOCK) then
---                 Put_Line("you typed: " & Lines.To_String(CMD_LOCK));
---              elsif Lines.Equal(Command, CMD_ADD) then
---                 Put_Line("you typed: " & Lines.To_String(CMD_ADD));
---              elsif Lines.Equal(Command, CMD_SUBTRACT) then
---                 Put_Line("you typed: " & Lines.To_String(CMD_SUBTRACT));
---              elsif Lines.Equal(Command, CMD_MULTIPLY) then
---                 Put_Line("you typed: " & Lines.To_String(CMD_MULTIPLY));
---              elsif Lines.Equal(Command, CMD_DIVIDE) then
---                 Put_Line("you typed: " & Lines.To_String(CMD_DIVIDE));
---              elsif Lines.Equal(Command, CMD_PUSH1) then
---                 Put_Line("you typed: " & Lines.To_String(CMD_PUSH1));
---              elsif Lines.Equal(Command, CMD_PUSH2) then
---                 Put_Line("you typed: " & Lines.To_String(CMD_PUSH2));
---              elsif Lines.Equal(Command, CMD_POP) then
---                 Put_Line("you typed: " & Lines.To_String(CMD_POP));
---              elsif Lines.Equal(Command, CMD_LOADFROM) then
---                 Put_Line("you typed: " & Lines.To_String(CMD_LOADFROM));
---              elsif Lines.Equal(Command, CMD_STORETO) then
---                 Put_Line("you typed: " & Lines.To_String(CMD_STORETO));
---              elsif Lines.Equal(Command, CMD_REMOVE) then
---                 Put_Line("you typed: " & Lines.To_String(CMD_REMOVE));
---              elsif Lines.Equal(Command, CMD_LIST) then
---                 Put_Line("you typed: " & Lines.To_String(CMD_LIST));
---              elsif Lines.Equal(Command, CMD_UNLOCK) and Get_State(CM) = Locked then
---                 declare
---                    Token2     : String := Lines.To_String(Lines.Substring(S, T(2).Start, T(2).Start + T(2).Length - 1));
---                    temp_pin   : PIN.PIN := PIN.From_String(Token2);
---                 begin
---                    if PIN."="(temp_pin, USER_PIN) then
---                       Put_Line("PIN matches. Calculator unlocked.");
---                       CM.Current_State := Unlocked;
---                    else
---                       Put_Line("Wrong PIN. Try Again.");
---                    end if;
---                 end;
---              else
---                 Put_Line("ERROR INPUT: " & Lines.To_String(Command));
---                 return;
---              end if;
---           end if;
 
+         -- ENDING LOOP TESTING
+         CalculatorManager.Print_Stack_Size (CM);
+         New_Line;
       end;
       
    end loop;

@@ -17,7 +17,14 @@ package CalculatorManager with SPARK_Mode is
    procedure Set_State(Calc : out Calculator; State : State_Type);
    
    procedure Set_Locked(Calc : out Calculator; Master_PIN : PIN.PIN);
+
+   function Check_Stack_Size(Calc : Calculator) return Boolean;
    
+   procedure Push(Calc : out Calculator; I: Integer);
+
+
+   -- TESTING ONLY
+   procedure Print_Stack_Size(Calc : Calculator);
 private
    type Calculator is record
       Master_PIN : PIN.PIN;

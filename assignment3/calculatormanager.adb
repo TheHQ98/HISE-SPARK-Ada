@@ -1,5 +1,8 @@
 with PIN;
-use PIN;
+
+with Ada.Text_IO;use Ada.Text_IO;
+with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
+with Ada.Long_Long_Integer_Text_IO;
 
 package body CalculatorManager with SPARK_Mode is
    
@@ -31,4 +34,25 @@ package body CalculatorManager with SPARK_Mode is
       Calc.Current_State := Locked;
    end Set_Locked;
    
+   function Check_Stack_Size(Calc : Calculator) return Boolean is
+   begin
+      if SS.Size(Calc.Stack) > 512 then
+         return True;
+      else
+         return False;
+      end if;
+   end Check_Stack_Size;
+
+   procedure Push(Calc : out Calculator; I: Integer) is
+   begin
+      SS.Push(Calc.Stack, I);
+   end Push;
+
+   -- TESTING ONLY
+   procedure Print_Stack_Size(Calc : Calculator) is
+   begin
+      Put("Stack Size:");
+      Ada.Integer_Text_IO.Put(SS.Size(Calc.Stack));
+   end Print_Stack_Size;
+
 end CalculatorManager;
