@@ -1,5 +1,6 @@
 with PIN;
 with SimpleStack;
+with MemoryStore;
 
 package CalculatorManager with SPARK_Mode is
    package SS is new SimpleStack(512, Integer, 0);
@@ -36,8 +37,10 @@ package CalculatorManager with SPARK_Mode is
    procedure Multiply(Calc : out Calculator);
    procedure Divide(Calc : out Calculator);
 
+   procedure Store(Calc : out Calculator; Address : MemoryStore.Location_Index);
 
-
+   procedure List(Calc : Calculator);
+   
    -- TESTING ONLY
    procedure Print_Stack_Size(Calc : Calculator);
 private
@@ -45,5 +48,6 @@ private
       Master_PIN : PIN.PIN;
       Current_State : State_Type := Locked;
       Stack : SS.SimpleStack;
+      DB  : MemoryStore.Database;
    end record;
 end CalculatorManager;

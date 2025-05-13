@@ -1,4 +1,5 @@
 with PIN;
+with MemoryStore;
 
 with Ada.Text_IO;use Ada.Text_IO;
 with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
@@ -11,6 +12,7 @@ package body CalculatorManager with SPARK_Mode is
       Calc.Master_PIN := Master_PIN;
       Calc.Current_State := Locked;
       SS.Init(Calc.Stack);
+      MemoryStore.Init(Calc.DB);
    end Init;
    
    function Get_State(Calc : Calculator) return State_Type is
@@ -125,9 +127,20 @@ package body CalculatorManager with SPARK_Mode is
       SS.Push(Calc.Stack, K);
    end Divide;
 
+   procedure Store(Calc : out Calculator; Address : MemoryStore.Location_Index) is
+   I : Integer;
+   begin
+      SS.Pop(Calc.Stack, I);
+      MemoryStore.Put (Calc.DB, Address, MemoryStore.Int32(I));
+   end;
+
+   procedure List(Calc : Calculator) is
+   begin
+      MemoryStore.Print (Calc.DB);
+   end List;
+
    -- TESTING ONLY
    procedure Print_Stack_Size(Calc : Calculator) is
-
    begin
       Put("Stack Size:");
       Ada.Integer_Text_IO.Put(SS.Size(Calc.Stack));

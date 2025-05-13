@@ -14,4 +14,15 @@ package body Utils with SPARK_Mode is
       end if;
    end Is_Valid_PIN;
 
+   function Is_Legal_Number(I : Integer) return Boolean is
+   begin
+      if I <= 0 then
+         return False;
+      elsif I > 256 then
+         return False;
+      else
+         return True;
+      end if;
+   end Is_Legal_Number;
+
 end Utils;

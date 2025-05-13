@@ -250,6 +250,31 @@ begin
                else
                   CalculatorManager.Divide(CM);
                end if;
+            -- storeTo
+            elsif Lines.Equal(Command, CMD_STORETO) then
+               declare
+                  Address : MemoryStore.Location_Index;
+               begin
+                  if NumTokens /= 2 then
+                     Put_Line("SYSTEM: Token number not correct");
+                     return;
+                  elsif CalculatorManager.Check_Stack_Pop(CM) = False then
+                     Put_Line("No more number in stack");
+                  elsif Utils.Is_Legal_Number (StringToInteger.From_String(Lines.To_String(Token1))) = False then
+                     Put_Line ("Please type a legal address: 1...256");
+                  else
+                     Address := StringToInteger.From_String(Lines.To_String(Token1));
+                     CalculatorManager.Store(CM, Address);
+                  end if;
+               end;
+            -- list
+            elsif Lines.Equal(Command, CMD_LIST) then
+               if NumTokens /= 1 then
+                  Put_Line("SYSTEM: Token number not correct");
+                  return;
+               else
+                  CalculatorManager.List(CM);
+               end if;
             end if;
          end if;
          
