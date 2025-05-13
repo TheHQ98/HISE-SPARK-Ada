@@ -200,14 +200,55 @@ begin
                      CalculatorManager.Push(CM, StringToInteger.From_String(Lines.To_String(Token2)));
                   end if;
                end if;
+            -- pop
             elsif Lines.Equal(Command, CMD_POP) then
                if NumTokens /= 1 then
                   Put_Line("SYSTEM: Token number not correct");
                   return;
-               elsif CalculatorManager.Check_Stack_Pop (CM) = False then
+               elsif CalculatorManager.Check_Stack_Pop(CM) = False then
                   Put_Line("Cannot pop anymore");
                else
                   CalculatorManager.Pop(CM);
+               end if;
+            -- operators +
+            elsif Lines.Equal(Command, CMD_ADD) then
+               if NumTokens /= 1 then
+                  Put_Line("SYSTEM: Token number not correct");
+                  return;
+               elsif CalculatorManager.Check_Stack_Operation(CM) = False then
+                  Put_Line("no enough for operation");
+               else
+                  CalculatorManager.Pop(CM);
+               end if;
+            -- operators -
+            elsif Lines.Equal(Command, CMD_SUBTRACT) then
+               if NumTokens /= 1 then
+                  Put_Line("SYSTEM: Token number not correct");
+                  return;
+               elsif CalculatorManager.Check_Stack_Operation(CM) = False then
+                  Put_Line("no enough for operation");
+               else
+                  CalculatorManager.Subtract(CM);
+               end if;
+            -- operators *
+            elsif Lines.Equal(Command, CMD_MULTIPLY) then
+               if NumTokens /= 1 then
+                  Put_Line("SYSTEM: Token number not correct");
+                  return;
+               elsif CalculatorManager.Check_Stack_Operation(CM) = False then
+                  Put_Line("no enough for operation");
+               else
+                  CalculatorManager.Multiply(CM);
+               end if;
+            -- operators /
+            elsif Lines.Equal(Command, CMD_DIVIDE) then
+               if NumTokens /= 1 then
+                  Put_Line("SYSTEM: Token number not correct");
+                  return;
+               elsif CalculatorManager.Check_Stack_Operation(CM) = False then
+                  Put_Line("no enough for operation");
+               else
+                  CalculatorManager.Divide(CM);
                end if;
             end if;
          end if;

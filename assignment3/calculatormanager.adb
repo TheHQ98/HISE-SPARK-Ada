@@ -63,6 +63,68 @@ package body CalculatorManager with SPARK_Mode is
       SS.Pop (Calc.Stack, I);
    end Pop;
 
+   function Check_Stack_Operation(Calc : Calculator) return Boolean is
+   begin
+      if SS.Size(Calc.Stack) >= 2 then
+         return True;
+      else
+         return False;
+      end if;
+   end Check_Stack_Operation;
+
+   procedure Add(Calc : out Calculator) is
+   I : Integer;
+   J : Integer;
+   K : Integer;
+   begin
+      SS.Pop(Calc.Stack, I);
+      SS.Pop(Calc.Stack, J);
+      K := I + J;
+      SS.Push(Calc.Stack, K);
+   end Add;
+
+   procedure Subtract(Calc : out Calculator) is
+   I : Integer;
+   J : Integer;
+   K : Integer;
+   begin
+      SS.Pop(Calc.Stack, I);
+      SS.Pop(Calc.Stack, J);
+      K := I - J;
+      SS.Push(Calc.Stack, K);
+   end Subtract;
+
+   procedure Multiply(Calc : out Calculator) is
+   I : Integer;
+   J : Integer;
+   K : Integer;
+   begin
+      SS.Pop(Calc.Stack, I);
+      SS.Pop(Calc.Stack, J);
+      K := I * J;
+      SS.Push(Calc.Stack, K);
+   end Multiply;
+   procedure Divide(Calc : out Calculator) is
+   I : Integer;
+   J : Integer;
+   K : Integer;
+   begin
+      SS.Pop(Calc.Stack, I);
+      SS.Pop(Calc.Stack, J);
+
+      -- check J
+      if J = 0 then
+         Put_Line ("Can not divide by 0");
+         SS.Push(Calc.Stack, J);
+         SS.Push(Calc.Stack, I);
+         return;
+      end if;
+
+
+      K := I / J;
+      SS.Push(Calc.Stack, K);
+   end Divide;
+
    -- TESTING ONLY
    procedure Print_Stack_Size(Calc : Calculator) is
 

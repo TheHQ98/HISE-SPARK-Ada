@@ -27,7 +27,17 @@ package CalculatorManager with SPARK_Mode is
    function Check_Stack_Pop(Calc : Calculator) return Boolean;
 
    procedure Pop(Calc : out Calculator);
+
+   -- Check for can operation from the stack
+   function Check_Stack_Operation(Calc : Calculator) return Boolean;
    
+   procedure Add(Calc : out Calculator);
+   procedure Subtract(Calc : out Calculator);
+   procedure Multiply(Calc : out Calculator);
+   procedure Divide(Calc : out Calculator);
+
+
+
    -- TESTING ONLY
    procedure Print_Stack_Size(Calc : Calculator);
 private
