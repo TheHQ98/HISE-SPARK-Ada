@@ -1,6 +1,8 @@
 with PIN;
+with SimpleStack;
 
 package CalculatorManager with SPARK_Mode is
+   package SS is new SimpleStack(512, Integer, 0);
 
    type State_Type is (Locked, Unlocked);
    
@@ -20,5 +22,6 @@ private
    type Calculator is record
       Master_PIN : PIN.PIN;
       Current_State : State_Type := Locked;
+      Stack : SS.SimpleStack;
    end record;
 end CalculatorManager;

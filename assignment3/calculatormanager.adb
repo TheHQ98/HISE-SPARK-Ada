@@ -7,6 +7,7 @@ package body CalculatorManager with SPARK_Mode is
    begin
       Calc.Master_PIN := Master_PIN;
       Calc.Current_State := Locked;
+      SS.Init(Calc.Stack);
    end Init;
    
    function Get_State(Calc : Calculator) return State_Type is
