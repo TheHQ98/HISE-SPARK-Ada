@@ -9,41 +9,41 @@ package CalculatorManager with SPARK_Mode is
    
    type Calculator is private;
    
-   procedure Init(Calc : out Calculator; Master_PIN : PIN.PIN);
+   procedure Init(Calc : out Calculator; Master_PIN : in PIN.PIN);
    
-   function Get_State(Calc : Calculator) return State_Type;
+   function Get_State(Calc : in Calculator) return State_Type;
    
-   function Get_Master_PIN(Calc : Calculator) return PIN.PIN;
+   function Get_Master_PIN(Calc : in Calculator) return PIN.PIN;
    
-   procedure Set_State(Calc : out Calculator; State : State_Type);
+   procedure Set_State(Calc : in out Calculator; State : in State_Type);
    
-   procedure Set_Locked(Calc : out Calculator; Master_PIN : PIN.PIN);
+   procedure Set_Locked(Calc : in out Calculator; Master_PIN : in PIN.PIN);
 
    -- Check for can push anymore token into the stack
-   function Check_Stack_Size(Calc : Calculator) return Boolean;
+   function Check_Stack_Size(Calc : in Calculator) return Boolean;
    
-   procedure Push(Calc : out Calculator; I: Integer);
+   procedure Push(Calc : in out Calculator; I: in Integer);
 
    -- Check for can pop from the stack
-   function Check_Stack_Pop(Calc : Calculator) return Boolean;
+   function Check_Stack_Pop(Calc : in Calculator) return Boolean;
 
-   procedure Pop(Calc : out Calculator);
+   procedure Pop(Calc : in out Calculator);
 
    -- Check for can operation from the stack
-   function Check_Stack_Operation(Calc : Calculator) return Boolean;
+   function Check_Stack_Operation(Calc : in Calculator) return Boolean;
    
-   procedure Add(Calc : out Calculator);
-   procedure Subtract(Calc : out Calculator);
-   procedure Multiply(Calc : out Calculator);
-   procedure Divide(Calc : out Calculator);
+   procedure Add(Calc : in out Calculator);
+   procedure Subtract(Calc : in out Calculator);
+   procedure Multiply(Calc : in out Calculator);
+   procedure Divide(Calc : in out Calculator);
 
-   procedure Store(Calc : out Calculator; Address : MemoryStore.Location_Index);
+   procedure Store(Calc : in out Calculator; Address : in MemoryStore.Location_Index);
 
-   procedure List(Calc : Calculator);
+   procedure List(Calc : in Calculator);
    
-   procedure Remove(Calc : out Calculator; Address : MemoryStore.Location_Index);
+   procedure Remove(Calc : in out Calculator; Address : in MemoryStore.Location_Index);
 
-   procedure Load(Calc : out Calculator; Address : MemoryStore.Location_Index);
+   procedure Load(Calc : in out Calculator; Address : in MemoryStore.Location_Index);
 
 
    -- TESTING ONLY

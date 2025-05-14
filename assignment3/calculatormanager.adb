@@ -7,7 +7,7 @@ with Ada.Long_Long_Integer_Text_IO;
 
 package body CalculatorManager with SPARK_Mode is
    
-   procedure Init(Calc : out Calculator; Master_PIN : PIN.PIN) is
+   procedure Init(Calc : out Calculator; Master_PIN : in PIN.PIN) is
    begin
       Calc.Master_PIN := Master_PIN;
       Calc.Current_State := Locked;
@@ -15,28 +15,28 @@ package body CalculatorManager with SPARK_Mode is
       MemoryStore.Init(Calc.DB);
    end Init;
    
-   function Get_State(Calc : Calculator) return State_Type is
+   function Get_State(Calc : in Calculator) return State_Type is
    begin
       return Calc.Current_State;
    end Get_State;
    
-   function Get_Master_PIN(Calc : Calculator) return PIN.PIN is
+   function Get_Master_PIN(Calc : in Calculator) return PIN.PIN is
    begin
       return Calc.Master_PIN;
    end Get_Master_PIN;
    
-   procedure Set_State(Calc : out Calculator; State : State_Type) is
+   procedure Set_State(Calc : in out Calculator; State : in State_Type) is
    begin
       Calc.Current_State := State;
    end Set_State;
    
-   procedure Set_Locked(Calc : out Calculator; Master_PIN : PIN.PIN) is
+   procedure Set_Locked(Calc : in out Calculator; Master_PIN : in PIN.PIN) is
    begin
       Calc.Master_PIN    := Master_PIN;
       Calc.Current_State := Locked;
    end Set_Locked;
    
-   function Check_Stack_Size(Calc : Calculator) return Boolean is
+   function Check_Stack_Size(Calc : in Calculator) return Boolean is
    begin
       if SS.Size(Calc.Stack) < 512 then
          return True;
@@ -45,12 +45,12 @@ package body CalculatorManager with SPARK_Mode is
       end if;
    end Check_Stack_Size;
 
-   procedure Push(Calc : out Calculator; I: Integer) is
+   procedure Push(Calc : in out Calculator; I: in Integer) is
    begin
       SS.Push(Calc.Stack, I);
    end Push;
 
-   function Check_Stack_Pop(Calc : Calculator) return Boolean is
+   function Check_Stack_Pop(Calc : in Calculator) return Boolean is
    begin
       if SS.Size(Calc.Stack) > 0 then
          return True;
@@ -59,13 +59,13 @@ package body CalculatorManager with SPARK_Mode is
       end if;
    end Check_Stack_Pop;
 
-   procedure Pop(Calc : out Calculator) is
+   procedure Pop(Calc : in out Calculator) is
    I : Integer;
    begin
       SS.Pop (Calc.Stack, I);
    end Pop;
 
-   function Check_Stack_Operation(Calc : Calculator) return Boolean is
+   function Check_Stack_Operation(Calc : in Calculator) return Boolean is
    begin
       if SS.Size(Calc.Stack) >= 2 then
          return True;
@@ -74,7 +74,7 @@ package body CalculatorManager with SPARK_Mode is
       end if;
    end Check_Stack_Operation;
 
-   procedure Add(Calc : out Calculator) is
+   procedure Add(Calc : in out Calculator) is
    I : Integer;
    J : Integer;
    K : Integer;
@@ -85,7 +85,7 @@ package body CalculatorManager with SPARK_Mode is
       SS.Push(Calc.Stack, K);
    end Add;
 
-   procedure Subtract(Calc : out Calculator) is
+   procedure Subtract(Calc : in out Calculator) is
    I : Integer;
    J : Integer;
    K : Integer;
@@ -96,7 +96,7 @@ package body CalculatorManager with SPARK_Mode is
       SS.Push(Calc.Stack, K);
    end Subtract;
 
-   procedure Multiply(Calc : out Calculator) is
+   procedure Multiply(Calc : in out Calculator) is
    I : Integer;
    J : Integer;
    K : Integer;
@@ -106,7 +106,7 @@ package body CalculatorManager with SPARK_Mode is
       K := I * J;
       SS.Push(Calc.Stack, K);
    end Multiply;
-   procedure Divide(Calc : out Calculator) is
+   procedure Divide(Calc : in out Calculator) is
    I : Integer;
    J : Integer;
    K : Integer;
@@ -127,24 +127,24 @@ package body CalculatorManager with SPARK_Mode is
       SS.Push(Calc.Stack, K);
    end Divide;
 
-   procedure Store(Calc : out Calculator; Address : MemoryStore.Location_Index) is
+   procedure Store(Calc : in out Calculator; Address : in MemoryStore.Location_Index) is
    I : Integer;
    begin
       SS.Pop(Calc.Stack, I);
       MemoryStore.Put (Calc.DB, Address, MemoryStore.Int32(I));
    end;
 
-   procedure List(Calc : Calculator) is
+   procedure List(Calc : in Calculator) is
    begin
       MemoryStore.Print (Calc.DB);
    end List;
 
-   procedure Remove(Calc : out Calculator; Address : MemoryStore.Location_Index) is 
+   procedure Remove(Calc : in out Calculator; Address : in MemoryStore.Location_Index) is 
    begin
       MemoryStore.Remove (Calc.DB, Address);
    end Remove;
 
-   procedure Load(Calc : out Calculator; Address : MemoryStore.Location_Index) is
+   procedure Load(Calc : in out Calculator; Address : in MemoryStore.Location_Index) is
    I : MemoryStore.Int32;
    begin
       if MemoryStore.Has (Calc.DB, Address) = False then
