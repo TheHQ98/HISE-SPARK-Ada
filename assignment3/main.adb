@@ -92,9 +92,9 @@ begin
       declare
          T         : MyStringTokeniser.TokenArray(1 .. 5) := (others => (Start => 1, Length => 0));
          NumTokens : Natural;
-         Command   : Lines.MyString;
-         Token1    : Lines.MyString;
-         Token2    : Lines.MyString;
+         Command   : Lines.MyString := Lines.From_String ("");
+         Token1    : Lines.MyString := Lines.From_String ("");
+         Token2    : Lines.MyString := Lines.From_String ("");
       begin
          MyStringTokeniser.Tokenise(Lines.To_String(S), T, NumTokens);
          
