@@ -61,7 +61,12 @@ package body MyStringTokeniser with SPARK_Mode is
             end if;
 
             -- advance to first character after the token
-            Index := Index + Extent.Length;
+            if Index <= Positive'Last - Extent.Length then
+               Index := Index + Extent.Length;
+            else
+               Count := Processed;
+               return;
+            end if;
          end if;
       end loop;
       Count := Processed;

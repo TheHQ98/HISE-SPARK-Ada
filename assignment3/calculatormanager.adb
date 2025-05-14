@@ -16,16 +16,6 @@ package body CalculatorManager with SPARK_Mode is
       MemoryStore.Init(Calc.DB);
    end Init;
    
-   function Get_State(Calc : in Calculator) return State_Type is
-   begin
-      return Calc.Current_State;
-   end Get_State;
-   
-   function Get_Master_PIN(Calc : in Calculator) return PIN.PIN is
-   begin
-      return Calc.Master_PIN;
-   end Get_Master_PIN;
-   
    procedure Set_Unlocked(Calc : in out Calculator) is
    begin
       Calc.Current_State := Unlocked;
@@ -64,6 +54,7 @@ package body CalculatorManager with SPARK_Mode is
    I : Integer;
    begin
       SS.Pop (Calc.Stack, I);
+      pragma Unreferenced (I);
    end Pop;
 
    function Check_Stack_Operation(Calc : in Calculator) return Boolean is
@@ -82,8 +73,15 @@ package body CalculatorManager with SPARK_Mode is
    begin
       SS.Pop(Calc.Stack, I);
       SS.Pop(Calc.Stack, J);
-      K := I + J;
-      SS.Push(Calc.Stack, K);
+
+      if (I > 0 and then J > Integer'Last - I) or (I < 0 and then J < Integer'First - I) then
+         Put_Line ("Overflow on addition — operation aborted");
+         SS.Push (Calc.Stack, J);
+         SS.Push (Calc.Stack, I);
+      else
+         K := I + J;
+         SS.Push(Calc.Stack, K);
+      end if;
    end Add;
 
    procedure Subtract(Calc : in out Calculator) is
@@ -93,8 +91,27 @@ package body CalculatorManager with SPARK_Mode is
    begin
       SS.Pop(Calc.Stack, I);
       SS.Pop(Calc.Stack, J);
-      K := I - J;
-      SS.Push(Calc.Stack, K);
+
+      if (J = Integer'First) then
+         Put_Line ("Overflow on addition — operation aborted");
+         SS.Push (Calc.Stack, J);
+         SS.Push (Calc.Stack, I);
+         return;
+      end if;
+
+      declare
+         J1 : constant Integer := -J;
+      begin
+         if (I > 0 and then J1 > Integer'Last - I) or (I < 0 and then J1 < Integer'First - I) then
+            Put_Line ("Overflow on subtraction — operation aborted");
+            SS.Push (Calc.Stack, J);
+            SS.Push (Calc.Stack, I);
+            return;
+         else
+            K := I - J;
+            SS.Push (Calc.Stack, K);
+         end if;
+      end;
    end Subtract;
 
    procedure Multiply(Calc : in out Calculator) is
@@ -104,9 +121,25 @@ package body CalculatorManager with SPARK_Mode is
    begin
       SS.Pop(Calc.Stack, I);
       SS.Pop(Calc.Stack, J);
-      K := I * J;
-      SS.Push(Calc.Stack, K);
+      
+      declare
+         LongNumber : Long_Long_Integer :=
+               Long_Long_Integer (I) * Long_Long_Integer (J);
+      begin
+         if LongNumber < Long_Long_Integer (Integer'First)
+            or else LongNumber > Long_Long_Integer (Integer'Last)
+         then
+            Put_Line ("Overflow on multiplication — operation aborted");
+            SS.Push (Calc.Stack, J);
+            SS.Push (Calc.Stack, I);
+            return;
+         else
+            K := Integer (LongNumber);
+            SS.Push (Calc.Stack, K);
+         end if;
+      end;
    end Multiply;
+   
    procedure Divide(Calc : in out Calculator) is
    I : Integer;
    J : Integer;
@@ -115,17 +148,20 @@ package body CalculatorManager with SPARK_Mode is
       SS.Pop(Calc.Stack, I);
       SS.Pop(Calc.Stack, J);
 
-      -- check J
-      if J = 0 then
+      if (I > 0 and then J > Integer'Last - I) or (I < 0 and then J < Integer'First - I) then
+         Put_Line ("Overflow on addition — operation aborted");
+         SS.Push (Calc.Stack, J);
+         SS.Push (Calc.Stack, I);
+      elsif
+         J = 0 then
          Put_Line ("Can not divide by 0");
          SS.Push(Calc.Stack, J);
          SS.Push(Calc.Stack, I);
          return;
+      else
+         K := I / J;
+         SS.Push(Calc.Stack, K);
       end if;
-
-
-      K := I / J;
-      SS.Push(Calc.Stack, K);
    end Divide;
 
    procedure Store(Calc : in out Calculator; Address : in MemoryStore.Location_Index) is

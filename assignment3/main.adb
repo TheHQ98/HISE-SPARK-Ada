@@ -191,7 +191,9 @@ begin
                   Put_Line("Cannot push anymore");
                else
                   CalculatorManager.Push(CM, StringToInteger.From_String(Lines.To_String(Token1)));
-                  if CalculatorManager.Check_Stack_Size(CM) = False then
+                  if CalculatorManager."="(CalculatorManager.Get_State(CM), CalculatorManager.Locked) then
+                     Put_Line("Locked");
+                  elsif CalculatorManager.Check_Stack_Size(CM) = False then
                      Put_Line("Cannot push anymore");
                   else
                      CalculatorManager.Push(CM, StringToInteger.From_String(Lines.To_String(Token2)));
@@ -261,7 +263,19 @@ begin
                      Put_Line ("Please type a legal address: 1...256");
                   else
                      Address := StringToInteger.From_String(Lines.To_String(Token1));
-                     CalculatorManager.Store(CM, Address);
+                     if MemoryStore.Has(CalculatorManager.Get_DB(CM), Address) = True then
+                        CalculatorManager.Remove(CM, Address);
+                     end if;
+
+                     if MemoryStore.Length(CalculatorManager.Get_DB(CM)) >= MemoryStore.Max_Locations then
+                        Put_Line ("Database memory full");
+                     elsif CalculatorManager.Get_Stack_Size (CM) = 0 then
+                        Put_Line ("Stack empty");
+                     elsif CalculatorManager."="(CalculatorManager.Get_State(CM), CalculatorManager.Locked) then
+                        Put_Line ("Locked");
+                     else
+                        CalculatorManager.Store(CM, Address);
+                     end if;
                   end if;
                end;
             -- list
@@ -284,9 +298,15 @@ begin
                      Put_Line ("Please type a legal address: 1...256");
                   else
                      Address := StringToInteger.From_String(Lines.To_String(Token1));
-                     CalculatorManager.Remove(CM, Address);
+
+                     if MemoryStore.Has(CalculatorManager.Get_DB(CM), Address) = False then
+                     Put_Line ("The address doesn't contain any number");
+                     else
+                        CalculatorManager.Remove(CM, Address);
+                     end if;
                   end if;
                end;
+            -- loadFrom
             elsif Lines.Equal(Command, CMD_LOADFROM) then
                declare
                      Address : MemoryStore.Location_Index;
@@ -298,7 +318,16 @@ begin
                      Put_Line ("Please type a legal address: 1...256");
                   else
                      Address := StringToInteger.From_String(Lines.To_String(Token1));
-                     CalculatorManager.Load(CM, Address);
+                     
+                     if MemoryStore.Has(CalculatorManager.Get_DB(CM), Address) = False then
+                        Put_Line ("The address doesn't contain any number");
+                     elsif CalculatorManager.Get_Stack_Size (CM) >= 512 then
+                        Put_Line ("Stack memory full");
+                     elsif CalculatorManager."="(CalculatorManager.Get_State(CM), CalculatorManager.Locked) then
+                        Put_Line ("Stack memory full");
+                     else
+                        CalculatorManager.Load(CM, Address);
+                     end if;
                   end if;
                end;
             else
