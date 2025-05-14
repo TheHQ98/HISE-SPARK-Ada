@@ -129,17 +129,18 @@ begin
                declare
                   temp_pin : PIN.PIN;
                begin
-                  if Utils.Is_Valid_PIN(Lines.To_String(Token1)) = False then
+                  if Utils.Is_Valid_PIN(Lines.To_String(Token1)) = True then
+                     pragma Assert (Lines.To_String (Token1)'Length = 4);
+                     temp_pin := PIN.From_String(Lines.To_String(Token1));
+                     if PIN."="(temp_pin, CalculatorManager.Get_Master_PIN(CM)) then
+                        -- change CM state to unlocked state
+                        CalculatorManager.Set_State(CM, CalculatorManager.Unlocked);
+                     else
+                        Put_Line("Wrong PIN.");
+                     end if;
+                  else
                      Put_Line ("Wrong Input: " & Lines.To_String(Token1));
                      return;
-                  end if;
-
-                  temp_pin := PIN.From_String(Lines.To_String(Token1));
-                  if PIN."="(temp_pin, CalculatorManager.Get_Master_PIN(CM)) then
-                     -- change CM state to unlocked state
-                     CalculatorManager.Set_State(CM, CalculatorManager.Unlocked);
-                  else
-                     Put_Line("Wrong PIN.");
                   end if;
                end;
             elsif Lines.Equal(Command, CMD_LOCK) then
