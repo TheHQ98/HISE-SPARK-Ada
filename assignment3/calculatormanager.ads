@@ -15,7 +15,7 @@ package CalculatorManager with SPARK_Mode is
    
    function Get_Master_PIN(Calc : in Calculator) return PIN.PIN;
    
-   procedure Set_State(Calc : in out Calculator; State : in State_Type);
+   procedure Set_Unlocked(Calc : in out Calculator);
    
    procedure Set_Locked(Calc : in out Calculator; Master_PIN : in PIN.PIN);
 
@@ -39,7 +39,9 @@ package CalculatorManager with SPARK_Mode is
 
    procedure Store(Calc : in out Calculator; Address : in MemoryStore.Location_Index);
 
-   procedure List(Calc : in Calculator);
+   procedure List(Calc : in Calculator)
+   with
+    Depends => (null => Calc);
    
    procedure Remove(Calc : in out Calculator; Address : in MemoryStore.Location_Index);
 

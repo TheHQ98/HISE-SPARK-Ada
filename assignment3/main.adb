@@ -134,7 +134,7 @@ begin
                      temp_pin := PIN.From_String(Lines.To_String(Token1));
                      if PIN."="(temp_pin, CalculatorManager.Get_Master_PIN(CM)) then
                         -- change CM state to unlocked state
-                        CalculatorManager.Set_State(CM, CalculatorManager.Unlocked);
+                        CalculatorManager.Set_Unlocked(CM);
                      else
                         Put_Line("Wrong PIN.");
                      end if;

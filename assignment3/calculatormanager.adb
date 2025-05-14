@@ -1,3 +1,4 @@
+with CalculatorManager;
 with PIN;
 with MemoryStore;
 
@@ -25,10 +26,10 @@ package body CalculatorManager with SPARK_Mode is
       return Calc.Master_PIN;
    end Get_Master_PIN;
    
-   procedure Set_State(Calc : in out Calculator; State : in State_Type) is
+   procedure Set_Unlocked(Calc : in out Calculator) is
    begin
-      Calc.Current_State := State;
-   end Set_State;
+      Calc.Current_State := Unlocked;
+   end Set_Unlocked;
    
    procedure Set_Locked(Calc : in out Calculator; Master_PIN : in PIN.PIN) is
    begin
