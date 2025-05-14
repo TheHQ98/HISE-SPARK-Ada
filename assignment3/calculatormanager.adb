@@ -152,7 +152,6 @@ package body CalculatorManager with SPARK_Mode is
       else
          I := MemoryStore.Get (Calc.DB, Address);
          SS.Push (Calc.Stack, Integer(I));
-         MemoryStore.Remove (Calc.DB, Address);
       end if;
    end Load;
 
