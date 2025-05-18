@@ -2,6 +2,26 @@
 -- Josh Feng 1266669
 -- Justin Zhang 1153289
 
+
+
+-- Security Properties implemented 
+-- 1. The arithmetic operations (“+”, “-”, “*”, “”), load, store, remove, and lock operations can only ever be performed when the calculator is in the unlocked state.
+
+--    For each of the above operation, within the calculatormanager has precondition check,
+--    namely `Pre  => CalculatorManager.Get_State (Calc) = Unlocked,` ensuring the state of the
+--    system is already unlocked before each of the operation. No error was shown from the SPARK prover,
+--    hence we are confident the security property is fulfilled.
+
+-- 2. The Unlock operation can only ever be performed when the calculator is in the locked state.
+
+--    For the unlock operation, the condition "Pre  => CalculatorManager.Get_State (Calc) = Unlocked,"
+--    is checked as a pre condition of lock operation by SPARK, in a similar fasion as the first security property, no complaint
+--    from spark as well. Thus we are confident the securtiy property is satisfied. 
+
+-- 3. The Lock operation, when it is performed, should update the master PIN with the new PIN that is supplied.
+
+--    This security property is proved by a post condition `PIN."="(CalculatorManager.Get_Master_PIN(Calc), Master_PIN)` after the 
+--    Set_Locked() procedure. Same as 1 and 2, SPARK checked out with no error, proving such security property is satisfied. 
 pragma SPARK_Mode (On);
 
 with MyCommandLine;
