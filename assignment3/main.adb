@@ -26,8 +26,13 @@
 -- 4. At the initialisation state after the program start, the calculator is locked and it have a pin, allowed user the unlock it.
 
 --    This security property is proved by following post condition "Post => (CalculatorManager.Get_State(Calc) = Locked and PIN."="(CalculatorManager.Get_Master_PIN(Calc), Master_PIN))"
---    the above post condition is in the init function, this condition ensure that after the calculator initliasation, the calculator is securely locked and have a PIN is stored.
+--    the above post condition is in the init procedure, this condition ensure that after the calculator initliasation, the calculator is securely locked and have a PIN is stored.
 --    ensures that the calculator is start from secure state and the user can only unlocked with the correct PIN.
+
+-- 5. When the value push into the stack, the calculator is alwasys in unlocked state, the value is 32-bit singed integer and the stack has not reached its capacity of 512 elements.
+
+--    For the push procedure, we have pre condition: "Pre => (CalculatorManager.Get_State(Calc) = Unlocked and SS.Size(CalculatorManager.Get_Stack(Calc)) < 512 and  I >= Integer'First  and  I <= Integer'Last)"
+--    
 pragma SPARK_Mode (On);
 
 with MyCommandLine;
