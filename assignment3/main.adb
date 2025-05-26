@@ -48,10 +48,20 @@
 
 -- 7. When locked, no stack or memory information can be accessed.
 
---    For the list procedure, we have pre condition: "Pre => (CalculatorManager.Get_State(Calc) = Unlocked)"
---    which ensures that the list operation is only performed when the calculator is in unlocked state.
+--    The list procedure includes a precondition requiring the calculator to be in the unlocked state, 
+--    as specified in CalculatorManager as "Pre => (CalculatorManager.Get_State(Calc) = Unlocked)" 
+--    and this precondition is formally checked by the SPARK, ensuring that listing memory contents 
+--    is only possible when the calculator is unlocked. Thus, we are confident that it is impossible for any code to access or 
+--    display stack or memory information while the calculator is locked, preventing information leakage.
 
 -- 8. Arithmetic operations require at least two operands on the stack.
+
+--    For the arithmetic operations, we have pre condition: "Pre => (CalculatorManager.Get_State(Calc) = Unlocked 
+--    and SS.Size(Get_Stack (Calc)) >= 2)"
+--    which ensures that the arithmetic operation is only performed when the calculator 
+--    is in unlocked state and the stack has at least two elements.
+
+
 pragma SPARK_Mode (On);
 
 with MyCommandLine;
