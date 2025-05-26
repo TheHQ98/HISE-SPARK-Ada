@@ -25,14 +25,33 @@
 
 -- 4. At the initialisation state after the program start, the calculator is locked and it have a pin, allowed user the unlock it.
 
---    This security property is proved by following post condition "Post => (CalculatorManager.Get_State(Calc) = Locked and PIN."="(CalculatorManager.Get_Master_PIN(Calc), Master_PIN))"
---    the above post condition is in the init procedure, this condition ensure that after the calculator initliasation, the calculator is securely locked and have a PIN is stored.
+--    This security property is proved by following post condition "Post => (CalculatorManager.Get_State(Calc) = Locked and 
+--    PIN."="(CalculatorManager.Get_Master_PIN(Calc), Master_PIN))" the above post condition is in the init procedure, 
+--    this condition ensure that after the calculator initliasation, the calculator is securely locked and have a PIN is stored.
 --    ensures that the calculator is start from secure state and the user can only unlocked with the correct PIN.
 
 -- 5. When the value push into the stack, the calculator is alwasys in unlocked state, the value is 32-bit singed integer and the stack has not reached its capacity of 512 elements.
 
---    For the push procedure, we have pre condition: "Pre => (CalculatorManager.Get_State(Calc) = Unlocked and SS.Size(CalculatorManager.Get_Stack(Calc)) < 512 and  I >= Integer'First  and  I <= Integer'Last)"
+--    For the push procedure, we have pre condition: "Pre => (CalculatorManager.Get_State(Calc) = Unlocked 
+--    and SS.Size(CalculatorManager.Get_Stack(Calc)) < 512 and  I >= Integer'First  and  I <= Integer'Last)"
 --    
+
+-- 6. Memory operations only access addresses in the range 1..256.
+
+--    For the storeTo procedure, we have pre condition: "Pre => (CalculatorManager.Get_State(Calc) = Unlocked 
+--    and MemoryStore.Length (CalculatorManager.Get_DB(Calc)) < MemoryStore.Max_Locations
+--    and SS.Size(Get_Stack (Calc)) > 0)" 
+--    and the post condition: "Post => (SS.Size(Get_Stack (Calc)) = SS.Size(Get_Stack (Calc'Old)) - 1)" 
+--    which ensures that the memory operation is only performed when the calculator is in unlocked state and the stack is not empty.
+--    The lower and upper bounds of the address (1..256) are enforced by the type definition 'Location_Index' in memorystore.ads, ensuring only 
+--    valid addresses are used in memory operations.
+
+-- 7. When locked, no stack or memory information can be accessed.
+
+--    For the list procedure, we have pre condition: "Pre => (CalculatorManager.Get_State(Calc) = Unlocked)"
+--    which ensures that the list operation is only performed when the calculator is in unlocked state.
+
+-- 8. Arithmetic operations require at least two operands on the stack.
 pragma SPARK_Mode (On);
 
 with MyCommandLine;
