@@ -22,6 +22,12 @@
 
 --    This security property is proved by a post condition `PIN."="(CalculatorManager.Get_Master_PIN(Calc), Master_PIN)` after the 
 --    Set_Locked() procedure. Same as 1 and 2, SPARK checked out with no error, proving such security property is satisfied. 
+
+-- 4. At the initialisation state after the program start, the calculator is locked and it have a pin, allowed user the unlock it.
+
+--    This security property is proved by following post condition "Post => (CalculatorManager.Get_State(Calc) = Locked and PIN."="(CalculatorManager.Get_Master_PIN(Calc), Master_PIN))"
+--    the above post condition is in the init function, this condition ensure that after the calculator initliasation, the calculator is securely locked and have a PIN is stored.
+--    ensures that the calculator is start from secure state and the user can only unlocked with the correct PIN.
 pragma SPARK_Mode (On);
 
 with MyCommandLine;
