@@ -27,8 +27,8 @@ package body MyStringTokeniser with SPARK_Mode is
                    Tokens(J).Length > 0) and then
             Tokens(J).Length-1 <= S'Last - Tokens(J).Start);
 
-         -- Each time, OutIndex equal to the index of first token + number f processed
-         -- Ensuring that OutIndex not duplicates, no able to write to the same position twice
+         -- Each time, OutIndex equal to the index of first token + number Processed
+         -- ensuring that OutIndex not duplicates, no able to write to the same position twice
          -- ensuring that OutIndex not missing any position in the array, and
          -- ensuring that OutIndex not out of boundary and always within legal index range
          pragma Loop_Invariant (OutIndex = Tokens'First + Processed);

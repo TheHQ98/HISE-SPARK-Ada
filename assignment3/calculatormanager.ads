@@ -165,9 +165,6 @@ package CalculatorManager with SPARK_Mode is
 
    function Get_Stack_Size(Calc : in Calculator) return Integer;
 
-   -- TESTING ONLY
-   procedure Print_Stack_Size(Calc : Calculator);
-
 private
    type Calculator is record
       Master_PIN : PIN.PIN;

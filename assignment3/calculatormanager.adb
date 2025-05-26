@@ -75,7 +75,7 @@ package body CalculatorManager with SPARK_Mode is
       SS.Pop(Calc.Stack, J);
 
       if (I > 0 and then J > Integer'Last - I) or (I < 0 and then J < Integer'First - I) then
-         Put_Line ("Overflow on addition — operation aborted");
+         Put_Line ("Overflow on addition, operation cancelled");
          SS.Push (Calc.Stack, J);
          SS.Push (Calc.Stack, I);
       else
@@ -93,7 +93,7 @@ package body CalculatorManager with SPARK_Mode is
       SS.Pop(Calc.Stack, J);
 
       if (J = Integer'First) then
-         Put_Line ("Overflow on addition — operation aborted");
+         Put_Line ("Overflow on subtraction, operation cancelled");
          SS.Push (Calc.Stack, J);
          SS.Push (Calc.Stack, I);
          return;
@@ -103,7 +103,7 @@ package body CalculatorManager with SPARK_Mode is
          J1 : constant Integer := -J;
       begin
          if (I > 0 and then J1 > Integer'Last - I) or (I < 0 and then J1 < Integer'First - I) then
-            Put_Line ("Overflow on subtraction — operation aborted");
+            Put_Line ("Overflow on subtraction, operation cancelled");
             SS.Push (Calc.Stack, J);
             SS.Push (Calc.Stack, I);
             return;
@@ -129,7 +129,7 @@ package body CalculatorManager with SPARK_Mode is
          if LongNumber < Long_Long_Integer (Integer'First)
             or else LongNumber > Long_Long_Integer (Integer'Last)
          then
-            Put_Line ("Overflow on multiplication — operation aborted");
+            Put_Line ("Overflow on multiplication, operation cancelled");
             SS.Push (Calc.Stack, J);
             SS.Push (Calc.Stack, I);
             return;
@@ -149,12 +149,12 @@ package body CalculatorManager with SPARK_Mode is
       SS.Pop(Calc.Stack, J);
 
       if (I > 0 and then J > Integer'Last - I) or (I < 0 and then J < Integer'First - I) then
-         Put_Line ("Overflow on addition — operation aborted");
+         Put_Line ("Overflow on divide, operation cancelled");
          SS.Push (Calc.Stack, J);
          SS.Push (Calc.Stack, I);
       elsif
          J = 0 then
-         Put_Line ("Can not divide by 0");
+         Put_Line ("Can not divide by 0, operation cancelled");
          SS.Push(Calc.Stack, J);
          SS.Push(Calc.Stack, I);
          return;
@@ -191,12 +191,5 @@ package body CalculatorManager with SPARK_Mode is
          SS.Push (Calc.Stack, Integer(I));
       end if;
    end Load;
-
-   -- TESTING ONLY
-   procedure Print_Stack_Size(Calc : Calculator) is
-   begin
-      Put("Stack Size:");
-      Ada.Integer_Text_IO.Put(SS.Size(Calc.Stack));
-   end Print_Stack_Size;
 
 end CalculatorManager;

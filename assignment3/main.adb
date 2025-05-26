@@ -63,11 +63,6 @@ procedure Main is
 
 begin
    ------------------------------------------------------------------
-   --  TESTING ONLY
-   ------------------------------------------------------------------
-
-
-   ------------------------------------------------------------------
    --  Programming Begin, init calculator manager, store the pin
    ------------------------------------------------------------------
    if MyCommandLine.Argument_Count = 1 then
@@ -156,7 +151,7 @@ begin
                         -- change CM state to unlocked state
                         CalculatorManager.Set_Unlocked(CM);
                      else
-                        Put_Line("Wrong PIN.");
+                        Put_Line("Wrong PIN");
                      end if;
                   else
                      Put_Line ("Wrong Input: " & Lines.To_String(Token1));
@@ -166,7 +161,7 @@ begin
             elsif Lines.Equal(Command, CMD_LOCK) then
                Put_Line("Already locked");
             else
-               Put_Line("Unexpect input");
+               Put_Line("System: unexpect input");
                return;
             end if;
          -- unlock state
@@ -202,6 +197,7 @@ begin
                   CalculatorManager.Push(CM, StringToInteger.From_String(Lines.To_String(Token1)));
                end if;
             -- push2
+            -- note: the first token will push first, and the second token will on the top of stack
             elsif Lines.Equal(Command, CMD_PUSH2) then
                -- check token
                if NumTokens /= 3 then
@@ -229,43 +225,47 @@ begin
                else
                   CalculatorManager.Pop(CM);
                end if;
-            -- operators +
+            -- addition operation
+            -- note: result = first_popped + second_popped
             elsif Lines.Equal(Command, CMD_ADD) then
                if NumTokens /= 1 then
                   Put_Line("SYSTEM: Token number not correct");
                   return;
                elsif CalculatorManager.Check_Stack_Operation(CM) = False then
-                  Put_Line("no enough for operation");
+                  Put_Line("Stack elements is not enough for operation");
                else
                   CalculatorManager.Add(CM);
                end if;
-            -- operators -
+            -- subtraction operation
+            -- note: result = first_popped - second_popped
             elsif Lines.Equal(Command, CMD_SUBTRACT) then
                if NumTokens /= 1 then
                   Put_Line("SYSTEM: Token number not correct");
                   return;
                elsif CalculatorManager.Check_Stack_Operation(CM) = False then
-                  Put_Line("no enough for operation");
+                  Put_Line("Stack elements is not enough for operation");
                else
                   CalculatorManager.Subtract(CM);
                end if;
-            -- operators *
+            -- multiplication operation
+            -- note: result = first_popped * second_popped
             elsif Lines.Equal(Command, CMD_MULTIPLY) then
                if NumTokens /= 1 then
                   Put_Line("SYSTEM: Token number not correct");
                   return;
                elsif CalculatorManager.Check_Stack_Operation(CM) = False then
-                  Put_Line("no enough for operation");
+                  Put_Line("Stack elements is not enough for operation");
                else
                   CalculatorManager.Multiply(CM);
                end if;
-            -- operators /
+            -- divide operation
+            -- note: result = first_popped / second_popped
             elsif Lines.Equal(Command, CMD_DIVIDE) then
                if NumTokens /= 1 then
                   Put_Line("SYSTEM: Token number not correct");
                   return;
                elsif CalculatorManager.Check_Stack_Operation(CM) = False then
-                  Put_Line("no enough for operation");
+                  Put_Line("Stack elements is not enough for operation");
                else
                   CalculatorManager.Divide(CM);
                end if;
@@ -355,12 +355,6 @@ begin
                return;
             end if;
          end if;
-         
-
-         -- ENDING LOOP TESTING
-         --  CalculatorManager.Print_Stack_Size (CM);
-         --  New_Line;
       end;
-      
    end loop; 
 end Main;
