@@ -1,3 +1,5 @@
+-- Note: this file is from SWEN90010 Lecture 14 and 15 - Live Programming and Proving in SPARK (Simple Stack)
+
 package body SimpleStack  with SPARK_Mode is
 
    procedure Init(S : out SimpleStack) is

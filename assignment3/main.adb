@@ -34,7 +34,6 @@
 
 --    For the push procedure, we have pre condition: "Pre => (CalculatorManager.Get_State(Calc) = Unlocked 
 --    and SS.Size(CalculatorManager.Get_Stack(Calc)) < 512 and  I >= Integer'First  and  I <= Integer'Last)"
---    
 
 -- 6. Memory operations only access addresses in the range 1..256.
 
